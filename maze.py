@@ -25,15 +25,15 @@ def make(prev, room, maze, size):
         else:
             print("qnfrk")
 
-size = 25
+size = 40
 maze = [[Room(r,c) for c in range(size)] for r in range(size)]
-mazeMap = [['■' for c in range(size*2+1)] for r in range(size*2+1)]
+mazeMap = [['█' for c in range(size*2+1)] for r in range(size*2+1)]
 
 make(None, maze[0][0], maze, size)
 
 while True:
     r = random.randint(1, size*2)
-    if mazeMap[r][-2] == "■":
+    if mazeMap[r][-2] == "█":
         pass
     mazeMap[r][-1] = "E"
     break
