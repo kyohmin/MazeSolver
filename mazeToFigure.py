@@ -4,95 +4,95 @@ import random
 from queue import Queue
 import multiprocessing
 
-def create_maze(dim):
-    # Create a grid filled with walls
-    maze = np.ones((dim*2+1, dim*2+1))
+# def create_maze(dim):
+#     # Create a grid filled with walls
+#     maze = np.ones((dim*2+1, dim*2+1))
 
-    # Define the starting point
-    x, y = (0, 0)
-    maze[2*x+1, 2*y+1] = 0
+#     # Define the starting point
+#     x, y = (0, 0)
+#     maze[2*x+1, 2*y+1] = 0
 
-    # Initialize the stack with the starting point
-    stack = [(x, y)]
-    while len(stack) > 0:
-        x, y = stack[-1]
+#     # Initialize the stack with the starting point
+#     stack = [(x, y)]
+#     while len(stack) > 0:
+#         x, y = stack[-1]
 
-        # Define possible directions
-        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-        random.shuffle(directions)
+#         # Define possible directions
+#         directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+#         random.shuffle(directions)
 
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            if nx >= 0 and ny >= 0 and nx < dim and ny < dim and maze[2*nx+1, 2*ny+1] == 1:
-                maze[2*nx+1, 2*ny+1] = 0
-                maze[2*x+1+dx, 2*y+1+dy] = 0
-                stack.append((nx, ny))
-                break
-        else:
-            stack.pop()
+#         for dx, dy in directions:
+#             nx, ny = x + dx, y + dy
+#             if nx >= 0 and ny >= 0 and nx < dim and ny < dim and maze[2*nx+1, 2*ny+1] == 1:
+#                 maze[2*nx+1, 2*ny+1] = 0
+#                 maze[2*x+1+dx, 2*y+1+dy] = 0
+#                 stack.append((nx, ny))
+#                 break
+#         else:
+#             stack.pop()
             
-    # Create an entrance and an exit
-    maze[1, 0] = 0
-    maze[-2, -1] = 0
+#     # Create an entrance and an exit
+#     maze[1, 0] = 0
+#     maze[-2, -1] = 0
 
-    return maze
+#     return maze
 
-def find_path(maze):
-    # BFS algorithm to find the shortest path
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    start = (1, 1)
-    end = (maze.shape[0]-2, maze.shape[1]-2)
-    visited = np.zeros_like(maze, dtype=bool)
-    visited[start] = True
-    queue = Queue()
-    queue.put((start, []))
-    while not queue.empty():
-        (node, path) = queue.get()
-        for dx, dy in directions:
-            next_node = (node[0]+dx, node[1]+dy)
-            if (next_node == end):
-                return path + [next_node]
-            if (next_node[0] >= 0 and next_node[1] >= 0 and 
-                next_node[0] < maze.shape[0] and next_node[1] < maze.shape[1] and 
-                maze[next_node] == 0 and not visited[next_node]):
-                visited[next_node] = True
-                queue.put((next_node, path + [next_node]))
+# def find_path(maze):
+#     # BFS algorithm to find the shortest path
+#     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+#     start = (1, 1)
+#     end = (maze.shape[0]-2, maze.shape[1]-2)
+#     visited = np.zeros_like(maze, dtype=bool)
+#     visited[start] = True
+#     queue = Queue()
+#     queue.put((start, []))
+#     while not queue.empty():
+#         (node, path) = queue.get()
+#         for dx, dy in directions:
+#             next_node = (node[0]+dx, node[1]+dy)
+#             if (next_node == end):
+#                 return path + [next_node]
+#             if (next_node[0] >= 0 and next_node[1] >= 0 and 
+#                 next_node[0] < maze.shape[0] and next_node[1] < maze.shape[1] and 
+#                 maze[next_node] == 0 and not visited[next_node]):
+#                 visited[next_node] = True
+#                 queue.put((next_node, path + [next_node]))
 
-def draw_maze(maze, path=None):
-    fig, ax = plt.subplots(figsize=(10,10))
+# def draw_maze(maze, path=None):
+#     fig, ax = plt.subplots(figsize=(10,10))
     
-    # Set the border color to white
-    fig.patch.set_edgecolor('white')
-    fig.patch.set_linewidth(0)
+#     # Set the border color to white
+#     fig.patch.set_edgecolor('white')
+#     fig.patch.set_linewidth(0)
 
-    ax.imshow(maze, cmap=plt.cm.binary, interpolation='nearest')
+#     ax.imshow(maze, cmap=plt.cm.binary, interpolation='nearest')
     
-    # Draw the solution path if it exists
-    if path is not None:
-        x_coords = [x[1] for x in path]
-        y_coords = [y[0] for y in path]
-        ax.plot(x_coords, y_coords, color='red', linewidth=2)
+#     # Draw the solution path if it exists
+#     if path is not None:
+#         x_coords = [x[1] for x in path]
+#         y_coords = [y[0] for y in path]
+#         ax.plot(x_coords, y_coords, color='red', linewidth=2)
     
-    ax.set_xticks([])
-    ax.set_yticks([])
+#     ax.set_xticks([])
+#     ax.set_yticks([])
     
-    # Draw entry and exit arrows
-    ax.arrow(0, 1, .4, 0, fc='green', ec='green', head_width=0.3, head_length=0.3)
-    ax.arrow(maze.shape[1] - 1, maze.shape[0]  - 2, 0.4, 0, fc='blue', ec='blue', head_width=0.3, head_length=0.3)
+#     # Draw entry and exit arrows
+#     ax.arrow(0, 1, .4, 0, fc='green', ec='green', head_width=0.3, head_length=0.3)
+#     ax.arrow(maze.shape[1] - 1, maze.shape[0]  - 2, 0.4, 0, fc='blue', ec='blue', head_width=0.3, head_length=0.3)
     
-    plt.margins(0,0)
-    plt.gca().xaxis.set_major_locator(plt.NullLocator())
-    plt.gca().yaxis.set_major_locator(plt.NullLocator())
-    plt.savefig("2.png", bbox_inches = 'tight',pad_inches = 0.1)
+#     plt.margins(0,0)
+#     plt.gca().xaxis.set_major_locator(plt.NullLocator())
+#     plt.gca().yaxis.set_major_locator(plt.NullLocator())
+#     plt.savefig("2.png", bbox_inches = 'tight',pad_inches = 0.1)
 
-    plt.show()
+#     plt.show()
     
 
-def solve(dim, i):
-    maze = create_maze(dim)
-    path = find_path(maze)
-    draw_maze(maze, path)
-    print("maze solved:", i)
+# def solve(dim, i):
+#     maze = create_maze(dim)
+#     path = find_path(maze)
+#     draw_maze(maze, path)
+#     print("maze solved:", i)
 
 
 
@@ -105,9 +105,65 @@ def solve(dim, i):
 #     for p in processes:
 #         p.join()
     
-if __name__ == "__main__":
-    for i in range(1):
-        maze = create_maze(100)
-        path = find_path(maze)
-        draw_maze(maze, path)
-        print("maze solved:", i)
+# if __name__ == "__main__":
+#     for i in range(1):
+#         maze = create_maze(100)
+#         path = find_path(maze)
+#         draw_maze(maze, path)
+#         print("maze solved:", i)
+
+
+
+
+# import matplotlib.pyplot as plt
+from random import shuffle
+# import multiprocessing
+
+class Room:
+    def __init__(self):
+        self.directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        shuffle(self.directions)
+
+
+def create_maze(dimmension):
+    # Create a grid filled with walls
+    mazeMap = [[1 for row in range(dimmension*2+1)] for col in range(dimmension*2+1)]
+    x,y = 0,0
+    mazeMap[x+1][y+1] = 0
+    record = [(x,y)]
+
+
+    while True:
+        if len(record) == 0: break
+
+        x,y = record[-1]
+
+        currentRoom = Room()
+        
+        for tmpX, tmpY in currentRoom.directions:
+            newY = tmpY + y
+            newX = tmpX + x
+
+            if newX >= 0 and newY >= 0 and newX < dimmension and newY < dimmension and mazeMap[2*newY+1][2*newX+1] == 1:
+                mazeMap[2*newY+1][2*newX+1] = 0
+                mazeMap[2*y+1+tmpY][2*x+1+tmpX] = 0
+                record.append((newX, newY))
+                break
+        else:
+            record.pop()
+
+    return mazeMap
+
+
+mazeMap = create_maze(50)
+for i in mazeMap:
+    print(i)
+
+
+for i in mazeMap:
+    for j in i:
+        if(j == 1):
+            print("⬛",end="")
+        else:
+            print("⬜", end="")
+    print(end="\n")
