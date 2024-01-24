@@ -5,5 +5,4 @@ class Room:
         self.r, self.c = r, c
         self.visit = 0
         self.prev = None
-        self.drct = [(r+1, c), (r,c+1), (r-1,c), (r, c-1)]
-        random.shuffle(self.drct)
+        self.drct = [(r+1,)]

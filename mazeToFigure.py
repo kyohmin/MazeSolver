@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 from queue import Queue
-import threading
+import multiprocessing
 
 def create_maze(dim):
     # Create a grid filled with walls
@@ -79,6 +79,14 @@ def draw_maze(maze, path=None):
     # Draw entry and exit arrows
     ax.arrow(0, 1, .4, 0, fc='green', ec='green', head_width=0.3, head_length=0.3)
     ax.arrow(maze.shape[1] - 1, maze.shape[0]  - 2, 0.4, 0, fc='blue', ec='blue', head_width=0.3, head_length=0.3)
+    
+    plt.margins(0,0)
+    plt.gca().xaxis.set_major_locator(plt.NullLocator())
+    plt.gca().yaxis.set_major_locator(plt.NullLocator())
+    plt.savefig("2.png", bbox_inches = 'tight',pad_inches = 0.1)
+
+    plt.show()
+    
 
 def solve(dim, i):
     maze = create_maze(dim)
@@ -89,17 +97,17 @@ def solve(dim, i):
 
 
 
-if __name__ == "__main__":
-    done = 0
-    processes = [threading.Thread(target=solve, args=(100,i,)) for i in range(100)]
-    for p in processes:
-        p.start()
-    for p in processes:
-        p.join()
-    
 # if __name__ == "__main__":
-#     for i in range(100):
-#         maze = create_maze(150)
-#         path = find_path(maze)
-#         draw_maze(maze, path)
-#         print("maze solved:", i)
+#     done = 0
+#     processes = [multiprocessing.Thread(target=solve, args=(100,i,)) for i in range(500)]
+#     for p in processes:
+#         p.start()
+#     for p in processes:
+#         p.join()
+    
+if __name__ == "__main__":
+    for i in range(1):
+        maze = create_maze(100)
+        path = find_path(maze)
+        draw_maze(maze, path)
+        print("maze solved:", i)
