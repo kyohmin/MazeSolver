@@ -1,4 +1,4 @@
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from random import shuffle
 # import multiprocessing
 
@@ -51,26 +51,49 @@ def create_maze(dimmension):
     return mazeMap
 
 def textify(mazeArr):
-
-    for i, line in enumerate(mazeMap):
+    for i, line in enumerate(mazeArr):
         for j, block in enumerate(line):
             if block != 1:
-                mazeMap[i][j] = 0
+                mazeArr[i][j] = 0
+
+    return mazeArr
+
+def createImage(mazeArr,numbering): # Require editting
+    fig, ax = plt.subplots(figsize=(10,10))
+    fig.patch.set_linewidth(0)
+
+    # Save as Image
+    ax.imshow(mazeArr, cmap=plt.cm.binary, interpolation='nearest')
+    plt.margins(0,0)
+    plt.gca().xaxis.set_major_locator(plt.NullLocator())
+    plt.gca().yaxis.set_major_locator(plt.NullLocator())
+    fileName = "Maze_{index}"
+    plt.savefig("originalMaze/"+fileName.format(index = numbering) + ".png", bbox_inches = 'tight',pad_inches = 0.1)
+
+    # Save as Text
+    with open("textMaze/"+fileName.format(index = numbering)+".txt", 'w') as f:
+            for line in mazeMap:
+                for block in line:
+                    f.write(str(block))
+                f.write("\n")
 
 
-    for i in mazeMap:
-        for j in i:
-            if(j == 1):
-                j = "⬛"
-                print("⬛",end="")
-            else:
-                j = "⬜"
-                print("⬜", end="")
-        print(end="\n")
+def solveMaze(mazeArr):
+    mazePath = []
+
+
+    
+    return mazePath
 
 if __name__ == "__main__":
-    mazeMap = create_maze(50)
-    textify(mazeMap)
+    for i in range(10):
+        mazeMap = create_maze(10)
+        mazeMap = textify(mazeMap)
+        createImage(mazeMap,i+1)
+        
+    
+    
+
 
     
 
