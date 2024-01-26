@@ -14,8 +14,6 @@ class Room:
 
         shuffle(self.directions)
 
-
-
 def create_maze(dimmension):
     # Create a grid filled with walls and rooms
     mazeMap = [[1 for _ in range(dimmension*2+1)] for _ in range(dimmension*2+1)]
