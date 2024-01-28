@@ -90,7 +90,6 @@ def draw_maze(maze, num, fig, ax, path=None):
         def update(frame):
             if frame == len(path)-1:
                 print(f'{frame} == {len(path)-1}; closing!')
-                plt.close(fig)
             x, y = path[frame]
             line.set_data(*zip(*[(p[1], p[0]) for p in path[:frame+1]]))  # update the data
             return line,

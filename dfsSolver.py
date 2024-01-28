@@ -4,6 +4,7 @@ from copy import deepcopy
 import time, math
 
 
+
 # Read Maze
 def readMaze(mazeIndex):
     textMaze = open("textMaze/Maze_{index}.txt".format(index=mazeIndex), "r")
@@ -53,7 +54,7 @@ def solveMaze(mazeInfo):
 
     return tmp, stack
 
-def showPath(mazeInfo):
+def showPath(mazeInfo, index):
     mazeArr, mazePath = mazeInfo
     figure, axes = plt.subplots(figsize=(10,10))
     figure.patch.set_linewidth(0)
@@ -63,7 +64,7 @@ def showPath(mazeInfo):
     axes.set_xticks([])
     axes.set_yticks([])
 
-    line, = axes.plot([], [], color='red', linewidth=4)
+    line, = axes.plot([], [], color='red', linewidth=7)
     
     def init():
         line.set_data([], [])
@@ -71,26 +72,25 @@ def showPath(mazeInfo):
     
     # update is called for each path point in the maze
     def update(frame):
-        if frame == len(mazePath)-1:
-            plt.close('all')
         
         x, y = mazePath[frame]
         line.set_data(*zip(*[(p[0], p[1]) for p in mazePath[:frame+1]]))  # update the data
+        # if frame == len(mazePath)-1:
+            # plt.close(fig=figure)
         return line,
     
     ani = animation.FuncAnimation(figure, update, frames=range(len(mazePath)), init_func=init, blit=True, repeat = False, interval=20)
 
-    plt.show()
+    # plt.show()
+    animation.FuncAnimation.save(ani, filename="Solved_{num}.gif".format(num=index),writer="Pillow")
     
 
 
 # Start
 if __name__ == "__main__":
-    # showPath(solveMaze(readMaze(1)))
-    
     start = time.time()
-    for i in range(3):
-        showPath(solveMaze(readMaze(i+1)))
+    for i in range(10):
+        showPath(solveMaze(readMaze(i+1)),i)
 
     math.factorial(100000)
     end = time.time()

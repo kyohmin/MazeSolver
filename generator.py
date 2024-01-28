@@ -67,6 +67,7 @@ def createImage(mazeArr,numbering): # Require editting
     plt.gca().yaxis.set_major_locator(plt.NullLocator())
     fileName = "Maze_{index}"
     plt.savefig("originalMaze/"+fileName.format(index = numbering) + ".png", bbox_inches = 'tight',pad_inches = 0.1)
+    plt.close()
 
     # Save as Text
     with open("textMaze/"+fileName.format(index = numbering)+".txt", 'w') as f:
@@ -84,7 +85,7 @@ def solveMaze(mazeArr):
     return mazePath
 
 if __name__ == "__main__":
-    for i in range(10):
+    for i in range(100):
         mazeMap = create_maze(10)
         mazeMap = textify(mazeMap)
         createImage(mazeMap,i+1)
