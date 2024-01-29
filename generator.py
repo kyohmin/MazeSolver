@@ -78,7 +78,7 @@ def createImage(mazeArr,numbering): # Require editting
 
 if __name__ == "__main__":
     for i in range(100):
-        mazeMap = create_maze(10)
+        mazeMap = create_maze(24)
         mazeMap = textify(mazeMap)
         createImage(mazeMap,i+1)
         
