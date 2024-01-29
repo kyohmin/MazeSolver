@@ -66,7 +66,7 @@ def createImage(mazeArr,numbering): # Require editting
     plt.gca().xaxis.set_major_locator(plt.NullLocator())
     plt.gca().yaxis.set_major_locator(plt.NullLocator())
     fileName = "Maze_{index}"
-    plt.savefig("originalMaze/"+fileName.format(index = numbering) + ".png", bbox_inches = 'tight',pad_inches = 0.1)
+    plt.savefig("originalMaze/"+fileName.format(index = numbering) + ".png", bbox_inches = 'tight',pad_inches = 0)
     plt.close()
 
     # Save as Text
@@ -75,14 +75,6 @@ def createImage(mazeArr,numbering): # Require editting
                 for block in line:
                     f.write(str(block))
                 f.write("\n")
-
-
-def solveMaze(mazeArr):
-    mazePath = []
-
-
-    
-    return mazePath
 
 if __name__ == "__main__":
     for i in range(100):
