@@ -2,12 +2,12 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from copy import deepcopy
 import time, math
+from random import shuffle
 import multiprocessing
 from multiprocessing import Semaphore
 import os
-from random import shuffle
 
-# Room Class
+# MAZE ROOM Class
 class Room:
     def __init__(self, row, col, dimmension):
         self.visit = False
@@ -20,38 +20,118 @@ class Room:
 
         shuffle(self.directions)
 
+# Folder Generating function
 def folderExist():
     pathList = []
-    pathList.append("./GIF")
-    pathList.append("./originalMaze")
-    pathList.append("./Solution")
-    pathList.append("./textMaze")
+    pathList.append("./Resources")
+    pathList.append("./Resources/GIF_Maze")
+    pathList.append("./Resources/Solved_Maze")
+    pathList.append("./Resources/Solved_Maze/Sequence_Maze_Result")
+    pathList.append("./Resources/Solved_Maze/Parallel_Maze_Result")
+    pathList.append("./Resources/Unsolved_Maze")
+    pathList.append("./Resources/Unsolved_Maze/Text_Maze")
+    pathList.append("./Resources/Unsolved_Maze/Image_Maze")
+    
     for path in pathList:
         if not os.path.exists(path):
             os.mkdir(path)
 
-# Create
-            
-# Textify
-            
-# Create Image
+    parallelTime = open("./Resources/parallelTime.txt", "w")
+    parallelTime.write("0.000 sec")
+    parallelTime.close()
 
-def mazeExist():
-    tmpFile = "./textMaze/Maze_1.txt"
+# Maze Generator
+def createMaze(dimmension):
+    # Create a grid filled with walls and rooms
+    mazeMap = [[1 for _ in range(dimmension*2+1)] for _ in range(dimmension*2+1)]
+    for row in range(1,2*dimmension+1, 2):
+        for col in range(1,2*dimmension+1,2):
+            mazeMap[row][col] = Room(col,row, dimmension)
+
+    # Starting Point of Maze
+    x,y = (0,0)
+    mazeMap[x+1][y+1].visit = True
+    record = [(1,1)]
+
+    # Repeat until all rooms are visited
+    while True:
+        if len(record) == 0: break
+
+        x,y = record[-1]
+
+        currentRoom = mazeMap[y][x]
+        
+        for newX,newY in currentRoom.directions:
+            dirX, dirY = int((newX - x)/2), int((newY - y)/2)
+
+            if mazeMap[newY][newX].visit == False:
+                mazeMap[newY][newX].visit = True # Set as visited
+                wallX, wallY = x+dirX, y+dirY
+                mazeMap[wallY][wallX] = 0 # Break wall
+                record.append((newX, newY))
+                mazeMap[newY][newX].directions.remove((x,y))
+                break
+        else:
+            record.pop()
+
+    return mazeMap
+
+def textifyMaze(mazeArr):
+    for i, line in enumerate(mazeArr):
+        for j, block in enumerate(line):
+            if block != 1:
+                mazeArr[i][j] = 0
+
+    return mazeArr
+
+def saveMaze(mazeArr,numbering):
+    fig, ax = plt.subplots(figsize=(10,10))
+    fig.patch.set_linewidth(0)
+
+    # Save as Image
+    ax.imshow(mazeArr, cmap=plt.cm.binary, interpolation='nearest')
+    plt.margins(0,0)
+    plt.gca().xaxis.set_major_locator(plt.NullLocator())
+    plt.gca().yaxis.set_major_locator(plt.NullLocator())
+    fileName = "Maze_{index}"
+    plt.savefig("./Resources/Unsolved_Maze/Image_Maze/"+fileName.format(index = numbering) + ".png", bbox_inches = 'tight',pad_inches = 0)
+    plt.close()
+
+    # Save as Text
+    with open("./Resources/Unsolved_Maze/Text_Maze/"+fileName.format(index = numbering)+".txt", 'w') as f:
+            for line in mazeArr:
+                for block in line:
+                    f.write(str(block))
+                f.write("\n")
+
+# Maze Generating function
+def mazeExist(mazes,dimmension):
+    for i in range(100):
+        if os.path.isfile("./Resources/Solved_Maze/Parallel_Maze_Result/Maze_{num}.png".format(num=i+1)):
+            os.remove("./Resources/Solved_Maze/Parallel_Maze_Result/Maze_{num}.png".format(num=i+1))
+        if os.path.isfile("./Resources/Solved_Maze/Sequence_Maze_Result/Maze_{num}.png".format(num=i+1)):
+            os.remove("./Resources/Solved_Maze/Sequence_Maze_Result/Maze_{num}.png".format(num=i+1))
+
+    tmpFile = "./Resources/Unsolved_Maze/Image_Maze/Maze_1.png"
+
     if not os.path.isfile(tmpFile):
-        # 미로 생성
-        pass
+        print("Maze not found\nCreating Maze...")
+        for i in range(mazes):
+            mazeMap = createMaze(dimmension)
+            mazeMap = textifyMaze(mazeMap)
+            saveMaze(mazeMap, i+1)
+        print("Maze created in './Resources/Unsolved_Maze'")
 
-# Read Maze
+# Read Maze for creating image
 def readMaze(mazeIndex):
     # Read first line to find dimmension
-    textMaze = open("textMaze/Maze_{index}.txt".format(index=mazeIndex), "r")
+    textMaze = open("./Resources/Unsolved_Maze/Text_Maze/Maze_{index}.txt".format(index=mazeIndex), "r")
     tmpDimmension = textMaze.readline()
     mazeDimmension = len(tmpDimmension.strip())
     textMaze.close()
 
     # Read the whole maze and create 2D array
-    textMaze = open("textMaze/Maze_{index}.txt".format(index=mazeIndex), "r")
+    textMaze = open("./Resources/Unsolved_Maze/Text_Maze/Maze_{index}.txt".format(index=mazeIndex), "r")
     mazeArr = [[0 for i in range(mazeDimmension)] for j in range(mazeDimmension)]
     for i,line in enumerate(textMaze):
         mazeDimmension = int((len(line)-1)/2)
@@ -101,7 +181,7 @@ def showPath(mazeInfo, index):
     # update is called for each path point in the maze
     def update(frame):
         line.set_data(*zip(*[(p[0], p[1]) for p in mazePath[:frame+1]]))  # update the data
-        plt.savefig("Solution/Solution_{num}.png".format(num=index+1))
+        plt.savefig("./Resources/Solved_Maze/Parallel_Maze_Result/Maze_{num}.png".format(num=index+1))
         return line,
 
     mazeArr, mazePath = mazeInfo
@@ -113,14 +193,14 @@ def showPath(mazeInfo, index):
     axes.set_xticks([])
     axes.set_yticks([])
 
-    line, = axes.plot([], [], color='red', linewidth=1)
+    line, = axes.plot([], [], color='red', linewidth=3.7)
     
     ani = animation.FuncAnimation(figure, update, frames=range(len(mazePath)), blit=True, repeat = False, interval=20)
     # plt.savefig("Solution/Solution_{num}.png".format(num=index+1))
 
     # plt.show()
     
-    animation.FuncAnimation.save(ani, filename="GIF/Solved_{num}.gif".format(num=index+1))
+    animation.FuncAnimation.save(ani, filename="./Resources/GIF_Maze/Solved_{num}.gif".format(num=index+1))
 
 def program(index, sema):
     sema.acquire()
@@ -129,43 +209,36 @@ def program(index, sema):
     print("Completed Maze",index+1)
     sema.release()    
 
-# When end parallel, delete the whole folder
-
-# # Parallel
+# Parallel
 if __name__ == "__main__":
-    choice = int(input("Enter the number: \n1. Seequential\n2. Parallel\n\nChoice: "))
-    # Create a Process only for GUI
+    # === Start =================================================
+    # Check if folders exist and create if it does not
+    folderExist()
 
-    # MultiProcesssing for logic
-    if choice == 1:
-        start = time.time()
-        for i in range(1):
-            print("Starting Maze",i+1)
-            showPath(solveMaze(readMaze(i+1)),i)
-            print("Completed Maze",i+1)
+    # Check if Maze exists and create if it does not
+    mazeExist(100,15) # 100 mazes with 49*49 in size
 
-        math.factorial(100000)
-        end = time.time()
-        
-        print(f"{end - start:.5f} sec")
+    # Maze Solving Logic
+    start = time.time()
 
-    else:
-        start = time.time()
+    sema = Semaphore(10)
+    processes = []
+    counter = 0
+    for i in range(9):
+        p = multiprocessing.Process(target=program, args=(i, sema))
+        processes.append(p)
+        p.start()
 
-        sema = Semaphore(100)
-        processes = []
-        counter = 0
-        for i in range(100):
-            p = multiprocessing.Process(target=program, args=(i, sema))
-            processes.append(p)
-            p.start()
+    for p in processes:
+        p.join()
 
-        for p in processes:
-            p.join()
+    math.factorial(100000)
+    end = time.time()
 
-        math.factorial(100000)
-        end = time.time()
+    # Record Time
+    parallelTime = open("./Resources/parallelTime.txt", "w")
+    parallelTime.write(f"{end - start:.3f} sec")
+    parallelTime.close()
 
-        print(f"{end - start:.5f} sec")
-
+    print(f"{end - start:.3f} sec")
 
