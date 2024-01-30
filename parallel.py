@@ -5,6 +5,42 @@ import time, math
 import multiprocessing
 from multiprocessing import Semaphore
 import os
+from random import shuffle
+
+# Room Class
+class Room:
+    def __init__(self, row, col, dimmension):
+        self.visit = False
+        self.directions = [(row, col+2), (row+2, col), (row, col-2), (row-2, col)]
+        tmp = [(row, col+2), (row+2, col), (row, col-2), (row-2, col)]
+
+        for x,y in tmp:
+            if x < 0 or y < 0 or x > dimmension*2 or y > dimmension*2: # Need to remove when it goes over the boundary
+                self.directions.remove((x,y))
+
+        shuffle(self.directions)
+
+def folderExist():
+    pathList = []
+    pathList.append("./GIF")
+    pathList.append("./originalMaze")
+    pathList.append("./Solution")
+    pathList.append("./textMaze")
+    for path in pathList:
+        if not os.path.exists(path):
+            os.mkdir(path)
+
+# Create
+            
+# Textify
+            
+# Create Image
+
+def mazeExist():
+    tmpFile = "./textMaze/Maze_1.txt"
+    if not os.path.isfile(tmpFile):
+        # 미로 생성
+        pass
 
 # Read Maze
 def readMaze(mazeIndex):
@@ -77,7 +113,7 @@ def showPath(mazeInfo, index):
     axes.set_xticks([])
     axes.set_yticks([])
 
-    line, = axes.plot([], [], color='red', linewidth=2)
+    line, = axes.plot([], [], color='red', linewidth=1)
     
     ani = animation.FuncAnimation(figure, update, frames=range(len(mazePath)), blit=True, repeat = False, interval=20)
     # plt.savefig("Solution/Solution_{num}.png".format(num=index+1))
@@ -93,6 +129,8 @@ def program(index, sema):
     print("Completed Maze",index+1)
     sema.release()    
 
+# When end parallel, delete the whole folder
+
 # # Parallel
 if __name__ == "__main__":
     choice = int(input("Enter the number: \n1. Seequential\n2. Parallel\n\nChoice: "))
@@ -101,7 +139,7 @@ if __name__ == "__main__":
     # MultiProcesssing for logic
     if choice == 1:
         start = time.time()
-        for i in range(15):
+        for i in range(1):
             print("Starting Maze",i+1)
             showPath(solveMaze(readMaze(i+1)),i)
             print("Completed Maze",i+1)
@@ -117,7 +155,7 @@ if __name__ == "__main__":
         sema = Semaphore(100)
         processes = []
         counter = 0
-        for i in range(9):
+        for i in range(100):
             p = multiprocessing.Process(target=program, args=(i, sema))
             processes.append(p)
             p.start()

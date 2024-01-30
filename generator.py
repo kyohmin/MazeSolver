@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 from random import shuffle
-# import multiprocessing
 
 class Room:
     def __init__(self, row, col, dimmension):
