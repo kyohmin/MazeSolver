@@ -229,7 +229,7 @@ if __name__ == "__main__":
     sema = Semaphore(10)
     processes = []
     counter = 0
-    for i in range(100):
+    for i in range(10):
         p = multiprocessing.Process(target=program, args=(i, sema))
         processes.append(p)
         p.start()
