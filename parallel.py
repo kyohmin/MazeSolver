@@ -221,10 +221,15 @@ if __name__ == "__main__":
     # Maze Solving Logic
     start = time.time()
 
+    # Start Recording
+    parallelTime = open("./Resources/parallelTime.txt", "w")
+    parallelTime.write("Recording")
+    parallelTime.close()
+
     sema = Semaphore(10)
     processes = []
     counter = 0
-    for i in range(9):
+    for i in range(100):
         p = multiprocessing.Process(target=program, args=(i, sema))
         processes.append(p)
         p.start()

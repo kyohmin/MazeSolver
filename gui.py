@@ -36,20 +36,14 @@ def gui():
         sequenceTime = open("./Resources/sequenceTime.txt", "r")
         sequenceRecord = sequenceTime.readline()
         sequenceTime.close()
-        if sequenceRecord != "0.000 sec":
-            sequenceTimeText = timeFont.render(sequenceRecord, True,(0,0,0))
-        else:
-            sequenceTimeText = "Recording"
+        sequenceTimeText = timeFont.render(sequenceRecord, True,(0,0,0))
         screen.blit(sequenceTimeText, (250,680))
 
         # Parallel Timer Text
         parallelTime = open("./Resources/parallelTime.txt", "r")
         parallelRecord = parallelTime.readline()
         parallelTime.close()
-        if parallelRecord != "0.000 sec":
-            parallelTimeText = timeFont.render(parallelRecord, True,(0,0,0))
-        else:
-            parallelTimeText = "Recording"
+        parallelTimeText = timeFont.render(parallelRecord, True,(255,255,255))
         screen.blit(parallelTimeText, (880,680))
         
         

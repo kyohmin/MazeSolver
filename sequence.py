@@ -216,7 +216,13 @@ if __name__ == "__main__":
 
     # Maze Solving Logic
     start = time.time()
-    for i in range(9):
+
+    # Start Timer
+    sequenceTime = open("./Resources/sequenceTime.txt", "w")
+    sequenceTime.write("Recording")
+    sequenceTime.close()
+
+    for i in range(10):
         print("Starting Maze",i+1)
         showPath(solveMaze(readMaze(i+1)),i)
         print("Completed Maze",i+1)
