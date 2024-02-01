@@ -1,0 +1,25 @@
+Records
+=== 1 - Sequence ===
+1.475 sec
+=== 1 - Parallel ===
+1.799 sec
+=== 5 - Sequence ===
+12.179 sec
+=== 5 - Parallel ===
+4.233 sec
+=== 10 - Sequence ===
+24.192 sec
+=== 10 - Parallel ===
+5.154 sec
+=== 20 - Sequence ===
+46.928 sec
+=== 20 - Parallel ===
+9.047 sec
+=== 50 - Sequence ===
+112.048 sec
+=== 50 - Parallel ===
+19.994 sec
+=== 100 - Sequence ===
+221.738 sec
+=== 100 - Parallel ===
+37.516 sec

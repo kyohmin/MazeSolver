@@ -15,7 +15,7 @@ class Room:
         tmp = [(row, col+2), (row+2, col), (row, col-2), (row-2, col)]
 
         for x,y in tmp:
-            if x < 0 or y < 0 or x > dimmension*2 or y > dimmension*2: # Need to remove when it goes over the boundary
+            if x < 0 or y < 0 or x > dimmension*2 or y > dimmension*2:
                 self.directions.remove((x,y))
 
         shuffle(self.directions)
@@ -39,6 +39,28 @@ def folderExist():
     parallelTime = open("./Resources/parallelTime.txt", "w")
     parallelTime.write("0.000 sec")
     parallelTime.close()
+
+    sequenceTime = open("./Resources/sequenceTime.txt", "w")
+    sequenceTime.write("0.000 sec")
+    sequenceTime.close()
+
+# Maze Generating function
+def mazeExist(mazes,dimmension):
+    for i in range(100):
+        if os.path.isfile("./Resources/Solved_Maze/Parallel_Maze_Result/Maze_{num}.png".format(num=i+1)):
+            os.remove("./Resources/Solved_Maze/Parallel_Maze_Result/Maze_{num}.png".format(num=i+1))
+        if os.path.isfile("./Resources/Solved_Maze/Sequence_Maze_Result/Maze_{num}.png".format(num=i+1)):
+            os.remove("./Resources/Solved_Maze/Sequence_Maze_Result/Maze_{num}.png".format(num=i+1))
+
+    tmpFile = "./Resources/Unsolved_Maze/Image_Maze/Maze_1.png"
+
+    if not os.path.isfile(tmpFile):
+        print("Maze not found\nCreating Maze...")
+        for i in range(mazes):
+            mazeMap = createMaze(dimmension)
+            mazeMap = textifyMaze(mazeMap)
+            saveMaze(mazeMap, i+1)
+        print("Maze created in './Resources/Unsolved_Maze'")
 
 # Maze Generator
 def createMaze(dimmension):
@@ -104,23 +126,6 @@ def saveMaze(mazeArr,numbering):
                     f.write(str(block))
                 f.write("\n")
 
-# Maze Generating function
-def mazeExist(mazes,dimmension):
-    for i in range(100):
-        if os.path.isfile("./Resources/Solved_Maze/Parallel_Maze_Result/Maze_{num}.png".format(num=i+1)):
-            os.remove("./Resources/Solved_Maze/Parallel_Maze_Result/Maze_{num}.png".format(num=i+1))
-        if os.path.isfile("./Resources/Solved_Maze/Sequence_Maze_Result/Maze_{num}.png".format(num=i+1)):
-            os.remove("./Resources/Solved_Maze/Sequence_Maze_Result/Maze_{num}.png".format(num=i+1))
-
-    tmpFile = "./Resources/Unsolved_Maze/Image_Maze/Maze_1.png"
-
-    if not os.path.isfile(tmpFile):
-        print("Maze not found\nCreating Maze...")
-        for i in range(mazes):
-            mazeMap = createMaze(dimmension)
-            mazeMap = textifyMaze(mazeMap)
-            saveMaze(mazeMap, i+1)
-        print("Maze created in './Resources/Unsolved_Maze'")
 
 # Read Maze for creating image
 def readMaze(mazeIndex):
@@ -177,11 +182,11 @@ def solveMaze(mazeInfo):
 
     return tmp, stack
 
-def showPath(mazeInfo, index):
+def showPath(mazeInfo, index, processType):
     # update is called for each path point in the maze
     def update(frame):
         line.set_data(*zip(*[(p[0], p[1]) for p in mazePath[:frame+1]]))  # update the data
-        plt.savefig("./Resources/Solved_Maze/Parallel_Maze_Result/Maze_{num}.png".format(num=index+1))
+        plt.savefig("./Resources/Solved_Maze/{type}_Maze_Result/Maze_{num}.png".format(type=processType,num=index+1))
         return line,
 
     mazeArr, mazePath = mazeInfo
@@ -196,18 +201,30 @@ def showPath(mazeInfo, index):
     line, = axes.plot([], [], color='red', linewidth=3.7)
     
     ani = animation.FuncAnimation(figure, update, frames=range(len(mazePath)), blit=True, repeat = False, interval=20)
-    # plt.savefig("Solution/Solution_{num}.png".format(num=index+1))
-
-    # plt.show()
     
     animation.FuncAnimation.save(ani, filename="./Resources/GIF_Maze/Solved_{num}.gif".format(num=index+1))
 
-def program(index, sema):
+# Sequence Program - Order of Read -> Solve -> Create GIF & PNG
+def sequenceProgram(index):
+    print("Starting Maze",index+1)
+    showPath(solveMaze(readMaze(index+1)),index,"Parallel")
+    print("Completed Maze",index+1)
+
+# Parallel Program - Order of [Read] -> [Solve] -> [Create GIF & PNG] with limited Processes
+def parallelProgram(index, sema):
     sema.acquire()
     print("Starting Maze",index+1)
-    showPath(solveMaze(readMaze(index+1)),index)
+    showPath(solveMaze(readMaze(index+1)),index,"Parallel")
     print("Completed Maze",index+1)
     sema.release()    
+
+# Timer Before Starting the Program
+def delayStart(processType, seconds):
+    for i in range(1,seconds+1):
+        txtFile = open("./Resources/{name}Time.txt".format(name=processType),"w")
+        txtFile.write("Starting in "+str(seconds-i))
+        txtFile.close()
+        time.sleep(1)
 
 # Parallel
 if __name__ == "__main__":
@@ -218,7 +235,11 @@ if __name__ == "__main__":
     # Check if Maze exists and create if it does not
     mazeExist(100,15) # 100 mazes with 49*49 in size
 
+    rep = int(input("Enter the number of maze:\n"))
+
+    # === PARALLEL ============================
     # Maze Solving Logic
+    delayStart("parallel",5)
     start = time.time()
 
     # Start Recording
@@ -226,11 +247,11 @@ if __name__ == "__main__":
     parallelTime.write("Recording")
     parallelTime.close()
 
-    sema = Semaphore(10)
+    sema = Semaphore(15)
     processes = []
     counter = 0
-    for i in range(10):
-        p = multiprocessing.Process(target=program, args=(i, sema))
+    for i in range(rep):
+        p = multiprocessing.Process(target=parallelProgram, args=(i, sema))
         processes.append(p)
         p.start()
 
@@ -246,4 +267,3 @@ if __name__ == "__main__":
     parallelTime.close()
 
     print(f"{end - start:.3f} sec")
-

@@ -262,3 +262,36 @@ if __name__ == "__main__":
     sequenceTime.close()
 
     print(f"{end - start:.3f} sec")
+
+    # === PARALLEL ============================
+    # Maze Solving Logic
+    delayStart("parallel",5)
+    start = time.time()
+
+    # Start Recording
+    parallelTime = open("./Resources/parallelTime.txt", "w")
+    parallelTime.write("Recording")
+    parallelTime.close()
+
+    sema = Semaphore(15)
+    processes = []
+    counter = 0
+    for i in range(rep):
+        p = multiprocessing.Process(target=parallelProgram, args=(i, sema))
+        processes.append(p)
+        p.start()
+
+    for p in processes:
+        p.join()
+
+    math.factorial(100000)
+    end = time.time()
+
+    # Record Time
+    parallelTime = open("./Resources/parallelTime.txt", "w")
+    parallelTime.write(f"{end - start:.3f} sec")
+    parallelTime.close()
+
+    print(f"{end - start:.3f} sec")
+
+
