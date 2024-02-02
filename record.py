@@ -220,7 +220,7 @@ if __name__ == "__main__":
     # Check if Maze exists and create if it does not
     mazeExist(100,15) # 100 mazes with 49*49 in size
 
-    repList = [1,5,10,20,50,100]
+    repList = [1,2,5,10,20,50,100]
 
     for rep in repList:
         # === SEQUENCE ============================

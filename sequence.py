@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
     # === SEQUENCE ============================
     # Maze Solving Logic
-    delayStart("sequence",5)
+    delayStart("sequence",4)
     start = time.time()
 
     # Start Timer

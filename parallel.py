@@ -233,7 +233,7 @@ if __name__ == "__main__":
 
     # === PARALLEL ============================
     # Maze Solving Logic
-    delayStart("parallel",5)
+    delayStart("parallel",4)
     start = time.time()
 
     # Start Recording
