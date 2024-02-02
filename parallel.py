@@ -36,13 +36,13 @@ def folderExist():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    parallelTime = open("./Resources/parallelTime.txt", "w")
-    parallelTime.write("0.000 sec")
-    parallelTime.close()
+    # parallelTime = open("./Resources/parallelTime.txt", "w")
+    # parallelTime.write("0.000 sec")
+    # parallelTime.close()
 
-    sequenceTime = open("./Resources/sequenceTime.txt", "w")
-    sequenceTime.write("0.000 sec")
-    sequenceTime.close()
+    # sequenceTime = open("./Resources/sequenceTime.txt", "w")
+    # sequenceTime.write("0.000 sec")
+    # sequenceTime.close()
 
 # Maze Generating function
 def mazeExist(mazes,dimmension):
