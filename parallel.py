@@ -204,12 +204,6 @@ def showPath(mazeInfo, index, processType):
     
     animation.FuncAnimation.save(ani, filename="./Resources/GIF_Maze/Solved_{num}.gif".format(num=index+1))
 
-# Sequence Program - Order of Read -> Solve -> Create GIF & PNG
-def sequenceProgram(index):
-    print("Starting Maze",index+1)
-    showPath(solveMaze(readMaze(index+1)),index,"Parallel")
-    print("Completed Maze",index+1)
-
 # Parallel Program - Order of [Read] -> [Solve] -> [Create GIF & PNG] with limited Processes
 def parallelProgram(index, sema):
     sema.acquire()
@@ -247,7 +241,7 @@ if __name__ == "__main__":
     parallelTime.write("Recording")
     parallelTime.close()
 
-    sema = Semaphore(15)
+    sema = Semaphore(10)
     processes = []
     counter = 0
     for i in range(rep):

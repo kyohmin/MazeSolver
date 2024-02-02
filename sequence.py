@@ -3,8 +3,6 @@ import matplotlib.animation as animation
 from copy import deepcopy
 import time, math
 from random import shuffle
-import multiprocessing
-from multiprocessing import Semaphore
 import os
 
 # MAZE ROOM Class
@@ -137,7 +135,7 @@ def readMaze(mazeIndex):
 
     # Read the whole maze and create 2D array
     textMaze = open("./Resources/Unsolved_Maze/Text_Maze/Maze_{index}.txt".format(index=mazeIndex), "r")
-    mazeArr = [[0 for i in range(mazeDimmension)] for j in range(mazeDimmension)]
+    mazeArr = [[0 for _ in range(mazeDimmension)] for _ in range(mazeDimmension)]
     for i,line in enumerate(textMaze):
         mazeDimmension = int((len(line)-1)/2)
         for j,block in enumerate(line.strip()):
@@ -207,16 +205,8 @@ def showPath(mazeInfo, index, processType):
 # Sequence Program - Order of Read -> Solve -> Create GIF & PNG
 def sequenceProgram(index):
     print("Starting Maze",index+1)
-    showPath(solveMaze(readMaze(index+1)),index,"Parallel")
+    showPath(solveMaze(readMaze(index+1)),index,"Sequence")
     print("Completed Maze",index+1)
-
-# Parallel Program - Order of [Read] -> [Solve] -> [Create GIF & PNG] with limited Processes
-def parallelProgram(index, sema):
-    sema.acquire()
-    print("Starting Maze",index+1)
-    showPath(solveMaze(readMaze(index+1)),index,"Parallel")
-    print("Completed Maze",index+1)
-    sema.release()    
 
 # Timer Before Starting the Program
 def delayStart(processType, seconds):
@@ -233,13 +223,13 @@ if __name__ == "__main__":
     folderExist()
 
     # Check if Maze exists and create if it does not
-    mazeExist(100,15) # 100 mazes with 49*49 in size
+    mazeExist(100,15) # 100 mazes with 31*31 in size
 
+    # Input how many mazes to solve
     rep = int(input("Enter the number of maze:\n"))
 
     # === SEQUENCE ============================
     # Maze Solving Logic
-
     delayStart("sequence",5)
     start = time.time()
 
@@ -248,10 +238,9 @@ if __name__ == "__main__":
     sequenceTime.write("Recording")
     sequenceTime.close()
 
+    #
     for i in range(rep):
-        print("Starting Maze",i+1)
-        showPath(solveMaze(readMaze(i+1)),i,"Sequence")
-        print("Completed Maze",i+1)
+        sequenceProgram(i)
 
     math.factorial(100000)
     end = time.time()
