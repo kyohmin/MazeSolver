@@ -5,7 +5,7 @@ import time, math
 from random import shuffle
 import multiprocessing
 from multiprocessing import Semaphore
-import os
+import os   
 
 # MAZE ROOM Class
 class Room:
