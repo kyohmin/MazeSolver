@@ -1,32 +1,25 @@
 Records
 === 1 - Sequence ===
-1.475 sec
+1.416 sec
 === 1 - Parallel ===
-1.799 sec
+1.664 sec
+=== 2 - Sequence ===
+4.175 sec
+=== 2 - Parallel ===
+3.373 sec
 === 5 - Sequence ===
-12.179 sec
+12.081 sec
 === 5 - Parallel ===
-4.233 sec
+4.217 sec
 === 10 - Sequence ===
-24.192 sec
+23.963 sec
 === 10 - Parallel ===
-5.154 sec
+4.966 sec
 === 20 - Sequence ===
-46.928 sec
+46.388 sec
 === 20 - Parallel ===
-9.047 sec
+9.186 sec
 === 50 - Sequence ===
-112.048 sec
+111.373 sec
 === 50 - Parallel ===
-19.994 sec
-=== 100 - Sequence ===
-221.738 sec
-=== 100 - Parallel ===
-37.516 sec
-
-
-
-100 - 2.21 ~ 2.4
-100 - 0.37 ~ 0.5
-
-2.2x, 0.35x
+21.133 sec

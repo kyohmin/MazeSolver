@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from copy import deepcopy
-import time, math
+import time
 from random import shuffle
 import os
 
@@ -242,7 +242,6 @@ if __name__ == "__main__":
     for i in range(rep):
         sequenceProgram(i)
 
-    math.factorial(100000)
     end = time.time()
     
     # Record Time

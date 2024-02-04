@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from copy import deepcopy
-import time, math
+import time
 from random import shuffle
 import multiprocessing
 from multiprocessing import Semaphore
@@ -179,6 +179,7 @@ def solveMaze(mazeInfo):
             mazeArr[curY][curX] = -2
             curX,curY = stack.pop()
 
+
     return tmp, stack
 
 def showPath(mazeInfo, index):
@@ -232,7 +233,6 @@ if __name__ == "__main__":
             showPath(solveMaze(readMaze(i+1)),i)
             print("Completed Maze",i+1)
 
-        math.factorial(100000)
         end = time.time()
         
         # Record Time
@@ -259,7 +259,6 @@ if __name__ == "__main__":
         for p in processes:
             p.join()
 
-        math.factorial(100000)
         end = time.time()
 
         # Record Time
