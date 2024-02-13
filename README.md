@@ -12,9 +12,6 @@
 ## GUI Example
 ![SC_3 46](https://github.com/kyohmin/mazeSolver/assets/71572502/c90f23d2-8f23-498f-ba52-dacc1b4c9ab2)
 
-## Speed Comparison Chart
-<img src="https://github.com/kyohmin/mazeSolver/assets/71572502/87fdff06-9ee9-4c4d-873c-def8810f2778" alt="drawing" width="600"/>
-
 ## Generated Files
 **\[GIF\]**
 
